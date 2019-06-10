@@ -1,0 +1,10 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "tic tac toe game",
+  "license": "MIT",
+  "repository": "",
+  "dependencies": {
+    "gearman": "^2.1.0"
+  }
+}

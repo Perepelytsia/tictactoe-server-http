@@ -1,0 +1,9 @@
+[program:api]
+command=/usr/bin/python3 /www/tictactoe/workers/api.py
+directory=/www/tictactoe/workers
+autostart=true
+autorestart=true
+startretries=3
+stderr_logfile=/var/log/supervisor/api.err.log
+stdout_logfile=/var/log/supervisor/api.out.log
+user=www-data
