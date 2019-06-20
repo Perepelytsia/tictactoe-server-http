@@ -12,9 +12,7 @@ worker.registerFunction('api')
 while True:
     job = worker.getJob()
     data = json.loads(job.arguments.decode('utf-8'))
-    print(data)
     controller = Controller(data)
     data = controller.action();
-    print(data)
     data = json.dumps(data)
     job.sendWorkComplete(bytes(data, 'utf8'))

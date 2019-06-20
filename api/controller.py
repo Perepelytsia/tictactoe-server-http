@@ -1,9 +1,15 @@
 import sys, os
-sys.path.append(os.path.join(os.getcwd(), 'actions'))
+#sys.path.append(os.path.join(os.getcwd(), 'actions'))
+sys.path.append('/www/tictactoe/api/actions')
+import init
+import start
+import start
+import finish
+import move
 
 class Controller:
 
-    def __init__(cmd: dict):
+    def __init__(self, cmd: dict):
         self.command = cmd
 
     def createServerCmd(self, response: dict) -> dict:
@@ -39,15 +45,11 @@ class Controller:
         else:
             # save command to the database
             if self.command['cmd'] == 'init':
-                import init
                 response = init.action(self.command['data'])
             elif self.command['cmd'] == 'start':
-                import start
                 response = start.action(self.command['data'])
             elif self.command['cmd'] == 'move':
-                import move
                 response =  move.action(self.command['data'])
             elif self.command['cmd'] == 'finish':
-                import finish
                 response =  finish.action(self.command['data'])
-        return createServerCmd(response)
+        return self.createServerCmd(response)
