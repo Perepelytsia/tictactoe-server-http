@@ -1,36 +1,19 @@
 import sys, os
+import psycopg2
+import json
 #sys.path.append(os.path.join(os.getcwd(), 'actions'))
 sys.path.append('/www/tictactoe/api/actions')
-import init
-import start
-import start
-import finish
-import move
 
 class Controller:
 
     def __init__(self, cmd: dict):
         self.command = cmd
 
-    def createServerCmd(self, response: dict) -> dict:
-        # save command to the database
-        answer = {"data": response}
-        answer['owner'] = self.command['owner']
-
-        if self.command['cmd'] == 'init':
-            answer['cmd'] = 'user'
-        elif self.command['cmd'] == 'finish':
-            answer['cmd'] = 'user'
-        elif self.command['cmd'] == 'start':
-            answer['cmd'] = 'state'
-        elif self.command['cmd'] == 'move':
-            answer['cmd'] = 'state'
-        elif self.command['cmd'] == 'error':
-            answer['cmd'] = 'error'
-
-        return answer
-
     def action(self) -> dict:
+
+        conn = psycopg2.connect(dbname='tictactoe', user='tictactoe', password='tictactoe', host='localhost')
+        cursor = conn.cursor()
+
         try:
             if not isinstance(self.command, dict):
                 raise ValueError("Invalid json for command")
@@ -41,15 +24,38 @@ class Controller:
             if 'data' not in self.command:
                 raise ValueError('No data for command')
         except BaseException as err:
-            return createServerCmd("error", {"msg": err})
+            response = {"cmd":"error", "data": err}
         else:
-            # save command to the database
+
+            postgres_insert_query = """ INSERT INTO commands (type, cmd, owner, data) VALUES (%s,%s,%s,%s)"""
+            record_to_insert = ('req', self.command['cmd'], self.command['owner'], json.dumps(self.command['data']))
+            cursor.execute(postgres_insert_query, record_to_insert)
+            conn.commit()
+
             if self.command['cmd'] == 'init':
+                import init
                 response = init.action(self.command['data'])
+            elif self.command['cmd'] == 'state':
+                import state
+                response = state.action(self.command['data'])
             elif self.command['cmd'] == 'start':
+                import start
                 response = start.action(self.command['data'])
             elif self.command['cmd'] == 'move':
+                import move
                 response =  move.action(self.command['data'])
             elif self.command['cmd'] == 'finish':
+                import finish
                 response =  finish.action(self.command['data'])
-        return self.createServerCmd(response)
+
+        response['owner'] = self.command['owner']
+
+        postgres_insert_query = """ INSERT INTO commands (type, cmd, owner, data) VALUES (%s,%s,%s,%s)"""
+        record_to_insert = ('res', response['cmd'], response['owner'], json.dumps(response['data']))
+        cursor.execute(postgres_insert_query, record_to_insert)
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return response

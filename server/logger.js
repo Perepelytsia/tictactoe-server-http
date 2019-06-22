@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 module.exports = function (file, msg) {
-    fs.writeFile('/var/log/nodejs/'+file+'.log', new Date() +' '+ msg, function (err) {
+    fs.appendFile('/var/log/nodejs/'+file+'.log', new Date() +' '+ msg + "\n", function (err) {
         if (err) throw err;
     });
 };
