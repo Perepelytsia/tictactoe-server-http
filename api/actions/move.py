@@ -1,3 +1,3 @@
 def action(data: dict) -> dict:
-    data['tail'] = 'move'
-    return data
+    result = {"cmd":"state", "data": {"cmd":"move"}}
+    return result

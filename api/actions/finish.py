@@ -1,3 +1,3 @@
 def action(data: dict) -> dict:
-    data['tail'] = 'finish'
-    return data
+    result = {"cmd":"user", "data": {"cmd":"finish"}}
+    return result

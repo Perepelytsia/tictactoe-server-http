@@ -19,12 +19,10 @@ class Controller:
                 raise ValueError("Invalid json for command")
             if 'cmd' not in self.command:
                 raise ValueError('No send cmd')
-            if 'owner' not in self.command:
-                raise ValueError('No owner for command')
             if 'data' not in self.command:
                 raise ValueError('No data for command')
         except BaseException as err:
-            response = {"cmd":"error", "data": err}
+            response = {"cmd":"error", "owner":self.command['owner'], "data": err}
         else:
 
             postgres_insert_query = """ INSERT INTO commands (type, cmd, owner, data) VALUES (%s,%s,%s,%s)"""
@@ -34,21 +32,19 @@ class Controller:
 
             if self.command['cmd'] == 'init':
                 import init
-                response = init.action(self.command['data'])
+                response = init.action(self.command)
             elif self.command['cmd'] == 'state':
                 import state
-                response = state.action(self.command['data'])
+                response = state.action(self.command)
             elif self.command['cmd'] == 'start':
                 import start
-                response = start.action(self.command['data'])
+                response = start.action(self.command)
             elif self.command['cmd'] == 'move':
                 import move
-                response =  move.action(self.command['data'])
+                response =  move.action(self.command)
             elif self.command['cmd'] == 'finish':
                 import finish
-                response =  finish.action(self.command['data'])
-
-        response['owner'] = self.command['owner']
+                response =  finish.action(self.command)
 
         postgres_insert_query = """ INSERT INTO commands (type, cmd, owner, data) VALUES (%s,%s,%s,%s)"""
         record_to_insert = ('res', response['cmd'], response['owner'], json.dumps(response['data']))

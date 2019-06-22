@@ -2,8 +2,7 @@ import gear
 import json
 import sys
 sys.path.append('../api')
-import controller
-from controller import Controller
+from controllerBase import Controller
 
 worker = gear.Worker('apiWorker')
 worker.addServer(host='localhost', port=4730)
