@@ -1,3 +1,5 @@
+import psycopg2
+
 def action(cmd: dict) -> dict:
 
     conn = psycopg2.connect(dbname='tictactoe', user='tictactoe', password='tictactoe', host='localhost')
@@ -6,15 +8,15 @@ def action(cmd: dict) -> dict:
     owner = cmd['owner']
 
     query = "select result from games where owner = %s and active = 1"
-	cursor.execute(query, (owner,))
-	games = cursor.fetchall()
+    cursor.execute(query, (owner,))
+    games = cursor.fetchall()
 
-	if games[0][0] == 1:
-		update1 = "UPDATE users SET win = win + 1 WHERE name = %s"
-	elif games[0][0] == 0:
-		update1 = "UPDATE users SET lost = lost + 1 WHERE name = %s"
+    if games[0][0] == 1:
+        update1 = "UPDATE users SET win = win + 1 WHERE name = %s"
+    else:
+        update1 = "UPDATE users SET lost = lost + 1 WHERE name = %s"
 
-	update2 = "UPDATE games SET active = 0 WHERE owner = %s and active = 1"
+    update2 = "UPDATE games SET active = 0 WHERE owner = %s and active = 1"
 
     cursor.execute(update1, (owner,))
     cursor.execute(update2, (owner,))

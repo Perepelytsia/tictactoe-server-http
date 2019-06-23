@@ -53,9 +53,10 @@ class Controller:
 
         return response
 
-data = {"cmd":"init", "owner":"script", "data":{}}
+#data = {"cmd":"init", "owner":"script", "data":{}}
 #data = {"cmd":"start", "owner":"script", "data":{}}
-#data = {"cmd":"move", "owner":"script", "data":{"choose":8}}
+data = {"cmd":"move", "owner":"script", "data":{"choose":1}}
+#data = {"cmd":"finish", "owner":"script", "data":{}}
 controller = Controller(data)
 result = controller.action();
 print(result)
