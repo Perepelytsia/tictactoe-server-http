@@ -5,13 +5,17 @@ def action(cmd: dict) -> dict:
     conn = psycopg2.connect(dbname='tictactoe', user='tictactoe', password='tictactoe', host='localhost')
     cursor = conn.cursor()
 
-    query = "select turn, chip, field from games where owner = %s and active = 1"
+    query = "select turn, chip, field, result from games where owner = %s and active = 1"
     cursor.execute(query, (cmd['owner'],))
     games = cursor.fetchall()
 
     if games:
         game = games[0]
         cmd['data'] = {"turn":game[0], "chip":game[1], "field":game[2]}
+
+        if game[3] == 1 or game[3] == 0:
+            cmd['data']['result'] = game[3]
+
         cmd['cmd'] = 'state'
     else:
 

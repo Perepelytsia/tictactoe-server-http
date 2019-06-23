@@ -33,15 +33,12 @@ class Controller:
             if self.command['cmd'] == 'init':
                 import init
                 response = init.action(self.command)
-            elif self.command['cmd'] == 'state':
-                import state
-                response = state.action(self.command)
             elif self.command['cmd'] == 'start':
                 import start
                 response = start.action(self.command)
             elif self.command['cmd'] == 'move':
                 import move
-                response =  move.action(self.command)
+                response =  move.action(self.command, False)
             elif self.command['cmd'] == 'finish':
                 import finish
                 response =  finish.action(self.command)
