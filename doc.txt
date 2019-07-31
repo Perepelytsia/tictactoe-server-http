@@ -1,0 +1,38 @@
+Server game architecture: nginx - nodejs - gearman - python workers (supervisord) - PostgreSQL
+
+systemctl status nginx
+systemctl status nodejs
+    node server/server.js
+systemctl status gearman-job-server
+systemctl status supervisor
+    /usr/bin/python3 /www/tictactoe/workers/api.py
+    python3 api.py
+systemctl status postgresql
+    
+psql -h localhost tictactoe tictactoe
+tictactoe
+\dt
+
+curl http://tictactoe -d '{"cmd":"init", "owner":"curl", "data":{}}'
+curl http://tictactoe -d '{"cmd":"start", "owner":"curl", "data":{}}'
+curl http://tictactoe -d '{"cmd":"move", "owner":"curl", "data":{"choose":5}}'
+curl http://tictactoe -d '{"cmd":"finish", "owner":"curl", "data":{}}'
+
+curl http://tictactoe -d'{"cmd": "user", "owner": "curl", "data": {"win": 0, "lost": 0}}'
+curl http://tictactoe -d'{"cmd": "state", "owner": "script", "data": {"turn": 1, "chip": 2, "field": [1, 0, 1, 2, 1, 2, 0, 2, 1], "result": 0}}'
+
+python3 /www/tictactoe/api/controllerTest.py
+-------------------------------------------------------------------------
+Server bot architecture: nginx - uWSGI
+
+minimax algorithm
+oneRate    = 1
+twoRate    = 6
+treeRate   = 97
+calc function = user + opponent * 0.8
+
+systemctl status uwsgi
+-------------------------------------------------------------------------
+Client pure JavaScript
+
+XMLHttpRequest

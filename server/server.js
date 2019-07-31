@@ -7,6 +7,10 @@ let client = gearman("localhost", 4730 , {timeout: 3000});
 
 http.createServer((req, res) => {
 
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS'); // If needed
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
     if (req.method == 'POST') {
 
         console.log("*****START*****");
@@ -52,7 +56,15 @@ http.createServer((req, res) => {
             logger('error', timeout);
         })
 
+    } else if (req.method == 'OPTIONS') {
+
+             // If needed
+            //res.setHeader('Access-Control-Allow-Credentials', true); // If needed
+            res.end('cors problem fixed');
+
     } else {
+        console.log(req.headers);
+        console.log(req.method);
         let er = 'Not implemented';
         res.statusCode = 501;
         res.end(er);
