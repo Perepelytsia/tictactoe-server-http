@@ -12,21 +12,24 @@ def action(cmd: dict, bot: bool) -> dict:
 	cursor.execute(query, (owner,))
 	games = cursor.fetchall()
 
+	if games:
+		game   = games[0]
+
+		turn   = game[0]
+		chip   = game[1]
+		field  = game[2]
+		result = game[3]
+
+		if chip==1:
+			botChip = 2
+		else:
+			botChip = 1
+
 	if bot:
 		# bot logic
 		if games:
 			# non first bot turn
-			game = games[0]
-			turn = game[0]
-			chip = game[1]
-			field = game[2]
-
-			if chip==1:
-				botChip = 2
-			else:
-				botChip = 1
-
-			if len(game) == 3 and cmd['data']['choose'] >= 0 and cmd['data']['choose'] < 9 and field[cmd['data']['choose']] == 0:
+			if result == None and cmd['data']['choose'] >= 0 and cmd['data']['choose'] < 9 and field[cmd['data']['choose']] == 0:
 				# correct 'choose'
 				field[cmd['data']['choose']] = botChip
 				update = "UPDATE games SET field = %s WHERE owner = %s and active = 1"
@@ -43,17 +46,7 @@ def action(cmd: dict, bot: bool) -> dict:
 		cmd = {"cmd":"state", "owner":owner, "data":data}
 	else:
 		# user logic
-		game = games[0]
-		turn = game[0]
-		chip = game[1]
-		field = game[2]
-
-		if chip==1:
-			botChip = 2
-		else:
-			botChip = 1
-
-		if len(game) == 3 and cmd['data']['choose'] >= 0 and cmd['data']['choose'] < 9 and field[cmd['data']['choose']] == 0:
+		if result == None and cmd['data']['choose'] >= 0 and cmd['data']['choose'] < 9 and field[cmd['data']['choose']] == 0:
 			# correct choose
 			field[cmd['data']['choose']] = chip
 			update = "UPDATE games SET field = %s WHERE owner = %s and active = 1"
