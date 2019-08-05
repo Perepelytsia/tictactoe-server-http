@@ -65,10 +65,9 @@ http.createServer((req, res) => {
     } else {
         console.log(req.headers);
         console.log(req.method);
-        let er = 'Not implemented';
-        res.statusCode = 501;
-        res.end(er);
-        logger('error', er);
+        res.statusCode = 200;
+        res.end("TICTACTOE");
+        logger('error', 'Not implemented ');
     }
 
 }).listen(port, hostname, (err) => {

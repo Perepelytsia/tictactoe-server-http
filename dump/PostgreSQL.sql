@@ -43,7 +43,7 @@ CREATE TABLE public.commands (
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP(0),
     type character(3) NOT NULL,
     cmd character varying(6) NOT NULL,
-    owner character varying(10) NOT NULL,
+    owner character varying(100) NOT NULL,
     data json NOT NULL
 );
 
@@ -82,10 +82,10 @@ CREATE TABLE public.games (
     active smallint NOT NULL,
     turn smallint NOT NULL,
     chip smallint NOT NULL,
-    owner character varying(20) NOT NULL,
-    opponet character varying(20) NOT NULL,
+    owner character varying(100) NOT NULL,
     field json NOT NULL,
-    result smallint
+    result smallint,
+    opponent character varying(100) NOT NULL
 );
 
 
@@ -121,7 +121,8 @@ CREATE TABLE public.users (
     id integer NOT NULL,
     name character varying(100) NOT NULL,
     win integer DEFAULT 0 NOT NULL,
-    lost integer DEFAULT 0 NOT NULL
+    lost integer DEFAULT 0 NOT NULL,
+    draw integer DEFAULT 0 NOT NULL
 );
 
 

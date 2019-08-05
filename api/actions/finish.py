@@ -13,6 +13,8 @@ def action(cmd: dict) -> dict:
 
     if games[0][0] == 1:
         update1 = "UPDATE users SET win = win + 1 WHERE name = %s"
+    elif games[0][0] == 2:
+        update1 = "UPDATE users SET draw = draw + 1 WHERE name = %s"
     else:
         update1 = "UPDATE users SET lost = lost + 1 WHERE name = %s"
 
@@ -23,11 +25,11 @@ def action(cmd: dict) -> dict:
 
     conn.commit()
 
-    query = "select win, lost from users where name = %s"
+    query = "select win, lost, draw from users where name = %s"
     cursor.execute(query, (owner,))
     users = cursor.fetchall()
 
-    data = {"win":users[0][0], "lost":users[0][1]}
+    data = {"win":users[0][0], "lost":users[0][1], "draw":users[0][2]}
     cmd['cmd'] = 'user'
     cmd['data'] = data
     

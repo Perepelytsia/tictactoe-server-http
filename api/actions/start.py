@@ -22,7 +22,7 @@ def action(cmd: dict) -> dict:
 
     conn = psycopg2.connect(dbname='tictactoe', user='tictactoe', password='tictactoe', host='localhost')
     cursor = conn.cursor()
-    insert = """ INSERT INTO games (active, turn, chip, owner, opponet, field) VALUES (%s, %s, %s, %s, %s, %s)"""
+    insert = """ INSERT INTO games (active, turn, chip, owner, opponent, field) VALUES (%s, %s, %s, %s, %s, %s)"""
     bind = (1, 1, cmd['data']['chip'], cmd['owner'], 'bot', json.dumps(cmd['data']['field']))
     cursor.execute(insert, bind)
     conn.commit()

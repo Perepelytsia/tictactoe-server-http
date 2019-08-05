@@ -53,13 +53,22 @@ def action(cmd: dict, bot: bool) -> dict:
 			cursor.execute(update, (json.dumps(field), owner,))
 			conn.commit()
 
+			res = None
 			if isWin(field, chip):
 				# user win
-				data = {"turn":turn, "chip":chip, "field":field, "result":1}
+				res = 1
+			elif isDraw(field):
+				#draw in game
+				res = 2
+
+			if (res != None):
+				# finish
+				data = {"turn":turn, "chip":chip, "field":field, "result":res}
 				cmd = {"cmd":"state", "owner":owner, "data":data}
 				update = "UPDATE games SET result = %s WHERE owner = %s and active = 1"
-				cursor.execute(update, (1, owner,))
+				cursor.execute(update, (res, owner,))
 				conn.commit()
+
 			else:
 				# user continue game
 
@@ -71,12 +80,20 @@ def action(cmd: dict, bot: bool) -> dict:
 				cmd['owner'] = owner
 				cmd = action(cmd, True)
 
+				res = None
 				if isWin(cmd['data']['field'], botChip):
 					# bot win
-					data = {"turn":turn, "chip":chip, "field":cmd['data']['field'], "result":0}
+					res = 0
+				elif isDraw(cmd['data']['field']):
+					#draw in game
+					res = 2
+
+				if (res != None):
+					# finish
+					data = {"turn":turn, "chip":chip, "field":cmd['data']['field'], "result":res}
 					cmd = {"cmd":"state", "owner":owner, "data":data}
 					update = "UPDATE games SET result = %s WHERE owner = %s and active = 1"
-					cursor.execute(update, (0, owner,))
+					cursor.execute(update, (res, owner,))
 					conn.commit()
 		else:
 			# incorrect 'choose', as result again 'state'
@@ -85,10 +102,7 @@ def action(cmd: dict, bot: bool) -> dict:
 
 			if len(game) == 4:
 				result = game[3]
-				if result == 1:
-					cmd['data']['result'] = 1
-				elif result == 0:
-					cmd['data']['result'] = 0
+				cmd['data']['result'] = result
 
 	cursor.close()
 	conn.close()
@@ -96,13 +110,16 @@ def action(cmd: dict, bot: bool) -> dict:
 	return cmd
 
 def isWin(field: list, chip: int) -> bool:
-
 	result = False
-
 	winCombs = ((0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8),(0,4,8), (2,4,6))
 	for winComb in winCombs:
 		if field[winComb[0]] == chip and field[winComb[1]] == chip and field[winComb[2]] == chip:
 			result = True
 			break
-
 	return result
+
+def isDraw(field: list) -> bool:
+	if 0 in field:
+		return False;
+	else:
+		return True;

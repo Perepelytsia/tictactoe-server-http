@@ -34,5 +34,4 @@ calc function = user + opponent * 0.8
 systemctl status uwsgi
 -------------------------------------------------------------------------
 Client pure JavaScript
-
 XMLHttpRequest
